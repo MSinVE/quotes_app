@@ -10,7 +10,7 @@ Django-приложение для отображения случайных ц�
 - Дашборд с топ-10 цитат, фильтрами, поиском, пагинацией и графиком.
 
 ## Установка
-1. Клонировать: `git clone https://github.com/yourusername/quotes_app`
+1. Клонировать: `git clone https://github.com/MSinVE/quotes_app`
 2. Установить: `pip install -r requirements.txt`
 3. Миграции: `python manage.py migrate`
 4. Запустить: `python manage.py runserver`
