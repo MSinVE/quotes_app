@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Регистрация{% endblock %}
+{% block content %}
+<div class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg animate-fade-in max-w-md mx-auto transition-colors duration-300">
+    <h1 class="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-6 text-center"><i class="fas fa-user-plus mr-2"></i>Регистрация</h1>
+    {% if messages %}
+        <div class="mb-4 space-y-2">
+            {% for message in messages %}
+                <div class="bg-{{ message.tags }}-100 border-l-4 border-{{ message.tags }}-500 text-{{ message.tags }}-700 p-4 rounded-lg shadow animate-fade-in message" data-duration="3000">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="Имя пользователя" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 animate-slide-in" style="animation-delay: 0.2s;" required>
+        <input type="email" name="email" placeholder="Email" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 animate-slide-in" style="animation-delay: 0.3s;" required>
+        <input type="password" name="password" placeholder="Пароль" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 animate-slide-in" style="animation-delay: 0.4s;" required>
+        <input type="password" name="password_confirm" placeholder="Подтвердите пароль" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 animate-slide-in" style="animation-delay: 0.5s;" required>
+        <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transform hover:scale-105 transition duration-300 w-full animate-slide-in" style="animation-delay: 0.6s;"><i class="fas fa-user-plus mr-2"></i>Зарегистрироваться</button>
+    </form>
+    <p class="text-gray-600 dark:text-gray-400 text-center mt-4">Уже есть аккаунт? <a href="{% url 'login' %}" class="text-blue-500 hover:underline">Войти</a></p>
+</div>
+{% endblock %}

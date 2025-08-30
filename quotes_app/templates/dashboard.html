@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Дашборд цитат{% endblock %}
+{% block content %}
+<div class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg animate-fade-in transition-colors duration-300">
+    <h1 class="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-6 text-center"><i class="fas fa-chart-bar mr-2"></i>Топ-10 популярных цитат</h1>
+    <canvas id="popularity-chart" class="mt-6 max-w-3xl mx-auto"></canvas>
+    <ul class="space-y-4 mt-6">
+        {% for q in top_quotes %}
+            <li class="animate-slide-in bg-gray-50 dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600 hover:shadow-xl transition-shadow duration-300"><i class="fas fa-star text-yellow-500 mr-2"></i>{{ q.text }} ({{ q.source }}) - Net likes: {{ q.net_likes }}</li>
+        {% endfor %}
+    </ul>
+    
+    <h2 class="text-2xl font-bold text-blue-600 dark:text-blue-400 mt-8 mb-4 text-center"><i class="fas fa-filter mr-2"></i>Все цитаты (с фильтрами)</h2>
+    <form method="get" class="space-y-4 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input type="text" name="source" placeholder="Фильтр по источнику" value="{{ request.GET.source }}" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 animate-slide-in" style="animation-delay: 0.2s;">
+            <input type="text" name="search" placeholder="Поиск по тексту/источнику" value="{{ request.GET.search }}" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 animate-slide-in" style="animation-delay: 0.3s;">
+        </div>
+        <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transform hover:scale-105 transition duration-300 w-full animate-slide-in" style="animation-delay: 0.4s;"><i class="fas fa-search mr-2"></i>Фильтровать</button>
+    </form>
+    <ul class="space-y-4">
+        {% for q in quotes %}
+            <li class="animate-slide-in bg-gray-50 dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600 hover:shadow-xl transition-shadow duration-300">{{ q.text }} ({{ q.source }}) - Likes: {{ q.likes.count }}, Dislikes: {{ q.dislikes.count }}, Views: {{ q.views }}</li>
+        {% endfor %}
+    </ul>
+    <div class="mt-4 flex justify-center space-x-4">
+        {% if quotes.has_previous %}
+            <a href="?page={{ quotes.previous_page_number }}{% if request.GET.source %}&source={{ request.GET.source }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Предыдущая</a>
+        {% endif %}
+        {% if quotes.has_next %}
+            <a href="?page={{ quotes.next_page_number }}{% if request.GET.source %}&source={{ request.GET.source }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Следующая</a>
+        {% endif %}
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('popularity-chart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [{% for q in top_quotes %}"{{ q.text|truncatechars:30 }}",{% endfor %}],
+            datasets: [{
+                label: 'Net Likes',
+                data: [{% for q in top_quotes %}{{ q.net_likes }},{% endfor %}],
+                backgroundColor: '#3b82f6',
+                borderColor: '#1e40af',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: { y: { beginAtZero: true } },
+            plugins: { legend: { labels: { color: document.body.classList.contains('dark') ? '#e5e7eb' : '#1f2937' } } }
+        }
+    });
+</script>
+<style>
+    li:nth-child(1) { animation-delay: 0.1s; }
+    li:nth-child(2) { animation-delay: 0.2s; }
+    li:nth-child(3) { animation-delay: 0.3s; }
+    li:nth-child(4) { animation-delay: 0.4s; }
+    li:nth-child(5) { animation-delay: 0.5s; }
+</style>
+{% endblock %}

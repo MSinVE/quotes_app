@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Случайная цитата{% endblock %}
+{% block content %}
+<div class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg animate-fade-in max-w-2xl mx-auto transition-colors duration-300">
+    <h1 class="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-6 text-center">
+        <i class="fas fa-quote-left mr-2"></i>Случайная цитата
+    </h1>
+    <div id="quote-container">
+        {% include 'quote_partial.html' %}
+    </div>
+    <button id="next-quote"
+            class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transform hover:scale-105 transition duration-300 mt-4 mx-auto block">
+        <i class="fas fa-sync-alt mr-2"></i>Следующая цитата
+    </button>
+</div>
+
+<script>
+    function bindLikeForms() {
+        document.querySelectorAll('.like-form, .dislike-form').forEach(form => {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: { 'X-CSRFToken': getCookie('csrftoken') }
+                });
+                const data = await response.json();
+                const type = form.classList.contains('like-form') ? 'like' : 'dislike';
+                form.querySelector('button').innerHTML =
+                    `<i class="fas fa-thumbs-${type === 'like' ? 'up' : 'down'}"></i> ${type === 'like' ? 'Лайк' : 'Дизлайк'} (${data[type + 's']})`;
+                form.querySelector('button').disabled = true;
+            });
+        });
+    }
+
+    document.getElementById('next-quote').addEventListener('click', async () => {
+        const response = await fetch("{% url 'random_quote' %}", { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+        const data = await response.json();
+        document.getElementById('quote-container').innerHTML = data.html;
+        bindLikeForms();
+    });
+
+    // CSRF из cookie
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                cookie = cookie.trim();
+                if (cookie.startsWith(name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // привязываем при загрузке
+    bindLikeForms();
+</script>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Добавить цитату{% endblock %}
+{% block content %}
+<div class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg animate-fade-in max-w-2xl mx-auto transition-colors duration-300">
+    <h1 class="text-3xl font-bold text-blue-600 mb-6 text-center">Добавить новую цитату</h1>
+    {% if user.is_authenticated %}
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transform hover:scale-105 transition duration-300 w-full"><i class="fas fa-save mr-2"></i>Добавить</button>
+        </form>
+    {% else %}
+        <p class="text-gray-600 text-center">Войдите, чтобы добавить цитату! <a href="{% url 'login' %}" class="text-blue-500 hover:underline">Войти</a></p>
+    {% endif %}
+</div>
+{% endblock %}
